@@ -23,7 +23,6 @@ json_file_1 = cwd + "/output1.json"
 #         print(data, file=f)
 
 class MyStreamListener(tweepy.StreamListener):
-    def
     def on_status(self, status):
         b = 1
     def on_data(self, data):
