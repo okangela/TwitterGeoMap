@@ -12,9 +12,9 @@
             $.ajax({
               url:"/search",
               type:"GET",
-              // data:{
-              //   id:7014
-              // },
+              data:{
+                q:'*'
+              },
               dataType:"json",
               success:function(data){
                 console.log(data)
