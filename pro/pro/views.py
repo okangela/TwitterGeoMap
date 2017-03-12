@@ -15,11 +15,11 @@ def search(request):
     print(parsed_json['hits']['total'])
     hits = parsed_json['hits']['total']
     outarray = [[]]
-    i = 7000
+    i = 1
     while (requests.get('http://localhost:9200/tweetmap/tweetdata/'+str(i)).status_code) == 200 and i<=hits:
         r = requests.get('http://localhost:9200/tweetmap/tweetdata/'+str(i))
         parsed_json = json.loads(r.content)
-        outarray.append([str(parsed_json['_source']['geo']['coordinates'][0])+','+str(parsed_json['_source']['geo']['coordinates'][1]),parsed_json['_source']['text'],parsed_json['_source']['user']['name']])
+        outarray.append([parsed_json['_source']['geo']['coordinates'][0],parsed_json['_source']['geo']['coordinates'][1],parsed_json['_source']['text'],parsed_json['_source']['user']['name']])
         # print(str(parsed_json['_source']['geo']['coordinates'][0])+','+str(parsed_json['_source']['geo']['coordinates'][1]))
         # print(parsed_json['_source']['text'])
         # print(parsed_json['_source']['user']['name'])
