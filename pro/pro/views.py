@@ -10,20 +10,14 @@ def index(request):
     return render(request, 'index.html')
 
 def search(request):
-    r = requests.get('http://localhost:9200/tweetmap/tweetdata/_search?q=*')
+    reqid = request.GET.get('q', '')
+    r = requests.get('http://localhost:9200/tweetmap/tweetdata/_search?size=10000&q='+str(reqid))
     parsed_json = json.loads(r.content)
-    print(parsed_json['hits']['total'])
     hits = parsed_json['hits']['total']
     outarray = [[]]
     i = 1
-    while (requests.get('http://localhost:9200/tweetmap/tweetdata/'+str(i)).status_code) == 200 and i<=hits:
-        r = requests.get('http://localhost:9200/tweetmap/tweetdata/'+str(i))
-        parsed_json = json.loads(r.content)
-        outarray.append([parsed_json['_source']['geo']['coordinates'][0],parsed_json['_source']['geo']['coordinates'][1],parsed_json['_source']['text'],parsed_json['_source']['user']['name']])
-        # print(str(parsed_json['_source']['geo']['coordinates'][0])+','+str(parsed_json['_source']['geo']['coordinates'][1]))
-        # print(parsed_json['_source']['text'])
-        # print(parsed_json['_source']['user']['name'])
-        print("success")
+    while i<hits:
+        outarray.append([parsed_json['hits']['hits'][i]['_source']['geo']['coordinates'][0],parsed_json['hits']['hits'][i]['_source']['geo']['coordinates'][1],parsed_json['hits']['hits'][i]['_source']['text'],parsed_json['hits']['hits'][i]['_source']['user']['name']])
         i = i+1
     # es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
     # reqid = request.GET.get('q', '')
