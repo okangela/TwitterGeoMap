@@ -41,14 +41,10 @@
       google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
         return function() {
           infowindow.setContent(String(locations[i][2])+','+String(locations[i][3]))
-
           infowindow.open(map, marker);
         }
-
-
       })(marker, i));
-
-}
+    }
   </script>
 </body>
 </html>
