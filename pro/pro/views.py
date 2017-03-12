@@ -10,12 +10,13 @@ def index(request):
     return render(request, 'index.html')
 
 def search(request):
-    r = requests.get('http://localhost:9200/tweetmap/tweetdata/_search?q=*')
+    reqid = request.GET.get('q', '')
+    r = requests.get('http://localhost:9200/tweetmap/tweetdata/_search?q='+str(reqid))
     parsed_json = json.loads(r.content)
     print(parsed_json['hits']['total'])
     hits = parsed_json['hits']['total']
     outarray = [[]]
-    i = 1
+    i = 7000
     while (requests.get('http://localhost:9200/tweetmap/tweetdata/'+str(i)).status_code) == 200 and i<=hits:
         r = requests.get('http://localhost:9200/tweetmap/tweetdata/'+str(i))
         parsed_json = json.loads(r.content)

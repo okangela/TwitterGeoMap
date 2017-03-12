@@ -17,50 +17,80 @@
 
       var marker, i;
 
-      // $("button").click(function(){
-            $.ajax({
-              url:"/search",
-              type:"GET",
-              data:{
-                q:'*'
-              },
-              dataType:"json",
-              success:function(data){
-                var length = data.length
-                for (i = 1; i < length; i++) {
-                  marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(data[i][0], data[i][1]),
-                    map: map
-                  });
+      $("button").click(function(){
 
-                  google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
-                    return function() {
-                      infowindow.setContent(String(data[i][2])+','+String(data[i][3]))
-                      infowindow.open(map, marker);
-                    }
-                  })(marker, i));
+        $.ajax({
+          url:"/search",
+          type:"GET",
+          data:{
+            q:'*'
+          },
+          dataType:"json",
+          success:function(data){
+            var length = data.length
+            for (i = 1; i < length; i++) {
+              marker = new google.maps.Marker({
+                position: new google.maps.LatLng(data[i][0], data[i][1]),
+                map: map
+              });
 
-                // document.getElementById("test").innerHTML = data.length;
-
+              google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
+                return function() {
+                  infowindow.setContent(String(data[i][2])+','+String(data[i][3]))
+                  infowindow.open(map, marker);
                 }
-              console.log(data)
-              }
+              })(marker, i));
+            }
+          console.log(data)
+          }
+        });
 
+      });
+
+      $.ajax({
+        url:"/search",
+        type:"GET",
+        data:{
+          q:'*'
+        },
+        dataType:"json",
+        success:function(data){
+          var length = data.length
+          for (i = 1; i < length; i++) {
+            marker = new google.maps.Marker({
+              position: new google.maps.LatLng(data[i][0], data[i][1]),
+              map: map
             });
+
+            google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
+              return function() {
+                infowindow.setContent(String(data[i][2])+','+String(data[i][3]))
+                infowindow.open(map, marker);
+
+              }
+            })(marker, i));
+
+            google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
+              return function() {
+                infowindow.close();
+              }
+            })(marker, i));
+          }
+        console.log(data)
+        }
+      });
     });
     </script>
   </head>
   <body>
-    <div id="map" style="width: 2000px; height: 1000px;"></div>
-
-    <header>
-      <h2> HERE'S YOUR FUCKING GEO MAP </h2>
-    </header>
-    <main>
-
-
-    </main>
-
-
+    <center>
+      <h4> HERE'S YOUR FUCKING GEO MAP </h4>
+      <main>
+          <label>Input :</label>
+          <input type="text" id="text" name="name" value="" />
+          <input type="button" id="text_value" value="Get Value"/><br>
+          <div id="map" style="width: 1200px; height: 630px;"></div>
+      </main>
+    </center>
   </body>
 </html>
