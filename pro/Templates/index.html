@@ -6,61 +6,25 @@
     <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
 
     <script type="text/javascript">
+
     var gmarkers=[];
+    var text_value = "";
+    var text_value_1 = "";
+    var marker, i;
+    var map
+    var textinterval
+    var interval4
+
     $(document).ready(function(){
+
       var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 2,
-        center: new google.maps.LatLng(-33.868,151.219),
+        center: new google.maps.LatLng(10,65),
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
 
-      var infowindow = new google.maps.InfoWindow();
-
-      var marker, i;
-
-      $("#text_value").click(function(){
-
-        // function toggleMarkers(){
-        //   for (i=0; i<gmarkers.length; i++){
-        //     if (gmarkers[i].getMap() !=null) gmarkers[i].setMap(null);
-        //     else gmarkers[i].setMap(map);
-        //   }
-        // }
-
-        $.each(gmarkers, function() {
-            this.setMap(null);
-          });
-
-        var text_value = $("#text").val();
-
-        $.ajax({
-          url:"/search",
-          type:"GET",
-          data:{
-            q:text_value
-          },
-          dataType:"json",
-          success:function(data){
-            var length = data.length
-            for (i = 1; i < length; i++) {
-              marker = new google.maps.Marker({
-                position: new google.maps.LatLng(data[i][0], data[i][1]),
-                map: map
-              });
-              gmarkers.push(marker);
-
-
-              google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
-                return function() {
-                  infowindow.setContent(String(data[i][2])+','+String(data[i][3]))
-                  infowindow.open(map, marker);
-                }
-              })(marker, i));
-            }
-          console.log(data)
-          }
-        });
-
+      var infowindow = new google.maps.InfoWindow({
+        maxWidth: 250
       });
 
       $.ajax({
@@ -81,9 +45,7 @@
 
             google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
               return function() {
-                var contentString =
-                '<h4>Tweet by :</h4>'+String(data[i][3])+
-                '<p>'+String(data[i][2])+'</p>';
+                var contentString ='<IMG WIDTH="50" ALIGN="Left" SRC="'+String(data[i][4])+'">'+'<h4>Tweet by :</h4>'+String(data[i][3])+'<p>'+String(data[i][2])+'<br>';
                 infowindow.setContent(contentString)
                 infowindow.open(map, marker);
               }
@@ -95,21 +57,148 @@
               }
             })(marker, i));
           }
-        console.log(data)
+        console.log('first log: Welcome! :)')
         }
       });
 
-      });
+      if(text_value == ''){
+
+        interval4 = setInterval(function(){
+
+          $.each(gmarkers, function() {
+              this.setMap(null);
+            });
+
+          $.ajax({
+          url:"/search",
+          type:"GET",
+          data:{
+            q:'*'
+          },
+          dataType:"json",
+          success:function(data){
+            var length = data.length
+            for (i = 1; i < length; i++) {
+              marker = new google.maps.Marker({
+                position: new google.maps.LatLng(data[i][0], data[i][1]),
+                map: map
+              });
+              gmarkers.push(marker);
+
+              google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
+                return function() {
+                  var contentString =
+                  '<h4>Tweet by :</h4>'+String(data[i][3])+
+                  '<p>'+String(data[i][2])+'</p>';
+                  infowindow.setContent(contentString)
+                  infowindow.open(map, marker);
+                }
+              })(marker, i));
+
+              google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
+                return function() {
+                  infowindow.close();
+                }
+              })(marker, i));
+            }
+          console.log('all tweets refresh')
+          }
+        });
+
+      }, 20000);
+
+      }
+
+      $("#text_value").click(function(){
+
+        clearInterval(interval4);
+
+          text_value = $("#text").val();
+
+            $.each(gmarkers, function() {
+                this.setMap(null);
+              });
+
+            if(text_value == ''){
+              text_value = '*';
+            }
+            textinterval = setInterval(function(){
+            $.ajax({
+
+            url:"/search",
+            type:"GET",
+            data:{
+              q:text_value
+            },
+            dataType:"json",
+            success:function(data){
+              var length = data.length
+              for (i = 1; i < length; i++) {
+                marker = new google.maps.Marker({
+                  position: new google.maps.LatLng(data[i][0], data[i][1]),
+                  map: map
+                });
+                gmarkers.push(marker);
+
+                google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
+                  return function() {
+                    infowindow.setContent(String(data[i][2])+','+String(data[i][3]))
+                    infowindow.open(map, marker);
+                  }
+                })(marker, i));
+              }
+            console.log('search result for '+text_value+' refreshed')
+            }
+
+          });
+        }, 10000);
+        });
+
+    });
     </script>
   </head>
+
+  <style>
+  body {
+    background-image: url("https://www.xmple.com/wallpaper/blue-gradient-white-linear-1920x1080-c2-87cefa-ffffff-a-105-f-14.svg");
+  }
+  h2 {
+
+      color: black;
+  }
+  label{
+    color: white;
+    font-size: 25px
+  }
+
+
+  .button {
+      background-color:  #008CBA;
+      border: none;
+      color: white;
+      padding: 10px 25px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 15px;
+      margin: 4px 2px;
+      cursor: pointer;
+
+  }
+  .button {border-radius: 4px;}
+
+</style>
+
+
   <body>
     <center>
-      <h4> HERE'S YOUR FUCKING GEO MAP </h4>
+      <h2><a href="http://fontmeme.com/star-wars-font/"><img src="http://fontmeme.com/permalink/170312/05eb2eb2d9dbcab843a10a2e50bebcbd.png" alt="star-wars-font" border="0"></a></h2>
       <main>
           <label>Input :</label>
           <input type="text" id="text" name="name" value="" />
-          <input type="button" id="text_value" value="Get Value"/><br>
-          <div id="map" style="width: 1200px; height: 630px;"></div>
+          <input type="button" id="text_value" value="Search!"/><br>
+          <!-- <button onclick="renderSpecific()">Search!</button> -->
+          <div id="map" style="width: 1350px; height: 800px;"></div>
       </main>
     </center>
   </body>

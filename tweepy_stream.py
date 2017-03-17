@@ -1,8 +1,11 @@
 import tweepy
+import time
 import json
 from tweepy import OAuthHandler
 import os
 import sys
+import http.client
+from elasticsearch import Elasticsearch
 
 consumer_key = 'CYt8uVj3H4hyOCPK5oz8iY1CY'
 consumer_secret = 'xdI3TdTN9ruQVqu9jWzshqCN3UbPcllrhVtoEfwr1V75n3ix68'
@@ -13,14 +16,7 @@ auth.set_access_token(access_token, access_secret)
 api = tweepy.API(auth)
 
 cwd = os.getcwd()
-json_file_1 = cwd + "/output1.json"
-
-# def write_tweets(tweet, filename):
-#     with open(filename, 'a') as f:
-#             json.dump(tweet, f)
-#             f.write('\n')
-#     with open('file.txt', 'a') as f:
-#         print(data, file=f)
+es = Elasticsearch([{'host': 'search-tweetproject-rfj3fbaymnut5knm7e7apux344.us-west-2.es.amazonaws.com', 'port': 80}])
 
 class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
@@ -28,12 +24,16 @@ class MyStreamListener(tweepy.StreamListener):
     def on_data(self, data):
         json_data = json.loads(data)
         if( "created_at" in json_data and json_data["lang"] == "en" and json_data["geo"] is not None):
-            print("Adding tweet id "+str(json_data["id"])+" to file output.json")
-            with open(json_file_1, 'a') as f:
-                print(data, file=f)
+            print("Adding tweet id "+str(json_data["id"])+" to Elasticsearch")
+            es.index(index="tweetmap", doc_type="tweetdata", body=json_data)
 
-            #  write_tweets(data, json_file_1)
-            #  print(json_data["user"]["name"] +','+str(json_data["geo"]["coordinates"][0])+":"+str(json_data["geo"]["coordinates"][1])+", "+json_data["place"]["country_code"]+":"+json_data["place"]["country"])
 myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth = api.auth, listener=myStreamListener)
-myStream.sample()
+while True:
+    try:
+        myStream.sample()
+    except Exception as e:
+        print(' Error received, retrying in 60 secs')
+        time.sleep(60)
+        print(str(e))
+        pass
