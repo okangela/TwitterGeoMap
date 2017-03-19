@@ -6,8 +6,8 @@ reqid = 'trump'
 r = requests.get('http://localhost:9200/tweetmap/tweetdata/_search?size=1000&q='+str(reqid))
 parsed_json = json.loads(r.content)
 hits = parsed_json['hits']['total']
-i = 0
-es = Elasticsearch([{'host': 'search-tweetproject-rfj3fbaymnut5knm7e7apux344.us-west-2.es.amazonaws.com', 'port': 80}])
+# i = 0
+# es = Elasticsearch([{'host': 'search-tweetproject-rfj3fbaymnut5knm7e7apux344.us-west-2.es.amazonaws.com', 'port': 80}])
 
 # def demo_bad_catch():
 #     while True:
