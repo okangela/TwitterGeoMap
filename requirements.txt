@@ -1,0 +1,4 @@
+Django==1.10.6
+elasticsearch==5.2.0
+requests==2.12.4
+tweepy==3.5.0

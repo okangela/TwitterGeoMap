@@ -18,6 +18,7 @@ def search(request):
     i = 1
     while i<hits:
         outarray.append([parsed_json['hits']['hits'][i]['_source']['geo']['coordinates'][0],parsed_json['hits']['hits'][i]['_source']['geo']['coordinates'][1],parsed_json['hits']['hits'][i]['_source']['text'],parsed_json['hits']['hits'][i]['_source']['user']['name']])
+        # outarray.append([parsed_json['hits']['hits'][i]['_source']['coordinates']['coordinates'][1],parsed_json['hits']['hits'][i]['_source']['coordinates']['coordinates'][0],parsed_json['hits']['hits'][i]['_source']['text'],parsed_json['hits']['hits'][i]['_source']['user']['name']],parsed_json['hits']['hits'][i]['_source']['user']['profile_background_image_url'])
         i = i+1
     # es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
     # reqid = request.GET.get('q', '')
