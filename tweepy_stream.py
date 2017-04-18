@@ -39,7 +39,7 @@ class MyStreamListener(tweepy.StreamListener):
         b = 1
     def on_data(self, data):
         json_data = json.loads(data)
-        if( "created_at" in json_data and json_data["lang"] == "en" and json_data["geo"] is not None):
+        if( "created_at" in json_data and json_data["lang"] == "en" and json_data["coordinates"] is not None):
             print("Adding tweet id "+str(json_data["id"])+" to Topic")
             tweet_data = {'id':json_data['id_str'],'text':json_data['text'],'user':json_data['user'],'created_at':json_data['created_at'],'coordinates':{'lat':json_data["coordinates"]["coordinates"][1],
         'lng':json_data["coordinates"]["coordinates"][0]}}
