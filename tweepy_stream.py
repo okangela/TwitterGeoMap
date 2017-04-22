@@ -16,9 +16,9 @@ auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_secret)
 api = tweepy.API(auth)
 
-cwd = os.getcwd()
-es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 print('Started')
+# es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
+
 
 # sqs = boto3.resource('sqs')
 # device_arn = 'arn:aws:sns:us-west-2:453367379586:NewTweet'
